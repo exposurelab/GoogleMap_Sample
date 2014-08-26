@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>KML overlay sample</title>
+	<style>
+		#map_canvas{
+			width : 800px;
+			height: 600px;
+		}
+
+		input{
+			width: 20px;
+			height: 20px;
+		}
+		
+		label{
+			font-size: 20px;
+			font-family: "sans-serif", "微軟正黑體";
+		}
+
+	</style>	
+
+	<script>
+		var map = null;
+
+		function initialize(){
+			var mapOptions = {
+				
+				center   : new google.maps.LatLng(23.999682, 121.049268),
+				zoom     : 7,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			};
+
+			// declaration a base map
+			map = new google.maps.Map(document.getElementById("map_canvas"),
+				mapOptions);
+		}
+	
+		function loadScript(){
+			var script  = document.createElement("script");
+			script.type ="text/javascript";
+			script.src  ="https://maps.googleapis.com/maps/api/js?key=AIzaSyASr1U5oG9wcP2P9n5IsCeHX2rZJYdcYgI&sensor=False&callback=initialize";
+			document.body.appendChild(script);
+		}
+
+		window.onload = loadScript;
+	
+		var kmlList = {};
+
+		function toggleKML(Node){
+			var labelNode = document.querySelector("#" + Node.attributes.id.value +"+label");
+			var id = Node.attributes.id.value;
+			var url = Node.attributes.href.value;
+
+			if (Node.checked){
+				// if kml is exist, remove it!
+				if(kmlList[id]){
+					kmlList[id].setMap(map);
+
+				}
+				else{
+					kmlList[id] = new google.maps.KmlLayer(url);
+					kmlList[id].setMap(map);
+				}
+				//set checked style
+				labelNode.style.color = "red";
+
+				
+			}
+			else{				
+				
+				if(kmlList[id]){
+					kmlList[id].setMap(null);
+				}
+
+				//set checked style
+				labelNode.style.color = "black";
+			}
+
+		} 
+
+	</script>
+</head>
+<body>
+	<div id="map_canvas"></div>
+	
+	<div class="form_Layer">
+			<input type="checkbox" class="kml" id="kml01" onclick="toggleKML(this);" href="http://gmaps-samples.googlecode.com/svn/trunk/ggeoxml/cta.kml">
+			<label for="kml01">Layer1</label><br />
+			
+			<input type="checkbox" class="kml" id="kml02" onclick="toggleKML(this);" href="https://drive.google.com/uc?export=download&id=0B4oMBdf22ftybURSQ0EzalpvTWc">
+			<label for="kml02">富民採樣</label><br />
+			
+			<input type="checkbox" class="kml" id="kml03" onclick="toggleKML(this);" href="https://www.dropbox.com/s/pqv6x9f0xjskpxo/Taipei.kml?dl=1">
+			<label for="kml03">Taipei</label><br />
+
+			<input type="checkbox" class="kml" id="kml04" onclick="toggleKML(this);" href="./data/points.kml">
+			<label for="kml04">Points</label><br />
+
+			<input type="checkbox" class="kml" id="kml05" onclick="toggleKML(this);" href="./data/小班圖.kml">
+			<label for="kml05">小班圖</label><br />
+			
+	</div>
+
+</body>
+</html>
