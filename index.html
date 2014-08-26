@@ -54,7 +54,7 @@
 			var url = Node.attributes.href.value;
 
 			if (Node.checked){
-				// if kml is exist, remove it!
+				// if kml is exist, show it!
 				if(kmlList[id]){
 					kmlList[id].setMap(map);
 
@@ -95,10 +95,10 @@
 			<input type="checkbox" class="kml" id="kml03" onclick="toggleKML(this);" href="https://www.dropbox.com/s/pqv6x9f0xjskpxo/Taipei.kml?dl=1">
 			<label for="kml03">Taipei</label><br />
 
-			<input type="checkbox" class="kml" id="kml04" onclick="toggleKML(this);" href="./data/points.kml">
+			<input type="checkbox" class="kml" id="kml04" onclick="toggleKML(this);" href="data/points.kml">
 			<label for="kml04">Points</label><br />
 
-			<input type="checkbox" class="kml" id="kml05" onclick="toggleKML(this);" href="./data/小班圖.kml">
+			<input type="checkbox" class="kml" id="kml05" onclick="toggleKML(this);" href="data/小班圖.kml">
 			<label for="kml05">小班圖</label><br />
 			
 	</div>
