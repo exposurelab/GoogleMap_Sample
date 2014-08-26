@@ -1,0 +1,132 @@
+<!--程式碼範例-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+<title>TGOS Map - KML圖層套疊</title>
+<style>
+	body{
+		margin:0px;
+		padding: 0 auto;
+
+	}
+
+	div#TGMap{
+		width:640px; 
+		height:580px; 
+		border: 1px solid #C0C0C0;
+	}
+	
+	input{
+		width: 20px;
+		height: 20px;
+	}
+
+</style>
+
+<!-- TGOS APIKey -->
+<script type="text/javascript" src="http://210.65.10.195/TGOS_API/tgos?ver=2&AppID=e4fSdVUolRuc/JESeAPqUU/ZYRZ/pvOPc1lLAP7CnuXDJ33GvU5ozA==&APIKey=cGEErDNy5yN/1fQ0vyTOZrghjE+jIU6upr2fHKk7UcWcK8ZolbFiPLGnpHmioaaHUOjwFHe2w+MoFUK5XlYjZ0O6NrX1dow4j6loqSZD0T64k5ElvwPhupqaa18NEWtyUHe+AEjjvcFdnckNRPLeeP3ArnOwLlU9U4vYnUFQ6F0ZsZ/II1HrasRmLbujqltC2hmnldaanJGg2fzNBS7EfvxF/F11pPf1ZQGLqbBoudzlEJRnw66toY5ef1ns/CDjypkc1YxDQa+VMw+uNFKqw3y9Z88eTeoaEK05y0d5XQRTX0/nKqWPuzWUqRRI+TzslVWZPyWFf1JfK0ZD8DmIGUChn96o0Q38aPe92U86JSjv20gGdOP50CBWujxmFQ0Nto+55Modl7A="></script>
+
+
+<script type="text/javascript"> 
+	var pMap = null;
+	var LayerList = {};
+	
+	function InitWnd() {
+		var pOMap = document.getElementById("TGMap");
+		var mapOptions = {
+			mapTypeControl: true	//mapTypeControl(關閉地圖類型控制項)
+		};
+		
+		//宣告TGOnlineMap地圖物件並設定坐標系統
+		pMap = new TGOS.TGOnlineMap(pOMap, TGOS.TGCoordSys.EPSG3826, mapOptions);
+	
+	}//End of InitWnd();
+	
+	function toggleKML(kmlNode){
+		var url = kmlNode.attributes.href.value;
+		var id = kmlNode.attributes.id.value;
+		var label = document.querySelector("#"+id+"+label");
+		
+		if (kmlNode.checked){	
+
+			if(id.slice(0, 3) == "kml"){
+			
+				// 假如圖面上已經有相同的KML疊加層, 則移除掉
+				if (LayerList[id]) {
+					LayerList[id].removeKml();
+					delete LayerList[id];  
+				}
+
+				// 新增KML圖層
+				LayerList[id] = new TGOS.TGKmlLayer(url, {
+				map: pMap,	 				  //設定欲疊加的底圖
+				suppressInfoWindows: false,   //可點選KML圖徵顯示訊息視窗, 若設為true則無法顯示訊息視窗
+				preserveViewport: true		  //疊加KML後將圖面縮放至KML的範圍,若設為false則取消這個功能
+				});
+			
+			}
+
+			else if(id.slice(0, 3) == "wms"){
+				
+				// 假如圖面上已經有相同的WMS疊加層, 則移除掉
+				if (LayerList[id]) {
+					LayerList[id].removeWmsLayer();
+					delete LayerList[id];  
+				}
+				
+				LayerList[id] = new TGOS.TGWmsLayer(url, {
+					map: pMap,
+					preserveViewport: true,
+					zIndex: 1,
+					wsVisible: true
+				});
+
+			}
+
+			// 修改label顏色
+			label.style.color = "red";
+		}
+		
+		else{				
+			
+			if (id.slice(0, 3) == "kml"){			
+				if (LayerList[id]) {
+					LayerList[id].removeKml();
+				}
+			}
+			
+			else if(id.slice(0, 3) == "wms"){
+				if (LayerList[id]) {
+					LayerList[id].removeWmsLayer();
+					delete LayerList[id];  
+				}
+			}
+
+			// 修改label顏色
+			label.style.color = "black";
+		
+		}//End of checkbox unchecked;
+	
+	}//End of toggleKML();
+
+	
+	
+
+</script>            
+</head>
+<body onload = "InitWnd();">
+	<div id="TGMap"></div>	
+	
+	<input type="checkbox" id="kml_01" class="kmlLayer" onclick="toggleKML(this);" href="http://api.tgos.nat.gov.tw/TGOS_API/wrarb.kml">
+	<label for="kml_01">Layer1</label><br />	
+	
+	<input type="checkbox" id="kml_02" class="kmlLayer" onclick="toggleKML(this);" href="http://api.tgos.nat.gov.tw/TGOS_API/GWREGION.kml">
+	<label for="kml_02">Layer2</label><br />
+
+	<input type="checkbox" id="kml_03" class="kmlLayer" onclick="toggleKML(this);" href="https://www.dropbox.com/s/pqv6x9f0xjskpxo/Taipei.kml?dl=1">
+	<label for="kml_03">Taipei Boundary</label><br />
+
+	<input type="checkbox" id="kml_03" class="kmlLayer" onclick="toggleKML(this);" href="https://drive.google.com/uc?export=download&id=0B4oMBdf22ftybURSQ0EzalpvTWc">
+	<label for="kml_03">Sample</label><br />
+
+</html> 
